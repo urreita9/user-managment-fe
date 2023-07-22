@@ -1,5 +1,7 @@
+import { LoginPage } from "./pages/login/LoginPage"
+
 const App = () => {
-  return <div>user management frontend</div>
+  return <LoginPage />
 }
 
 export default App
