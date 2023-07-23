@@ -1,8 +1,10 @@
-import { render, screen } from "@testing-library/react"
+import { act, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { LoginPage } from "./LoginPage"
 
 const getSubmitBtn = () => screen.getByRole("button", { name: /submit/i })
+const getEmailInput = () => screen.getByRole("textbox", { name: /email/i })
+const getPasswordInput = () => screen.getByLabelText(/password/i)
 
 describe("Login page", () => {
   it("should render login title", () => {
@@ -13,24 +15,35 @@ describe("Login page", () => {
   it("should render form inputs email/password and submit button", () => {
     render(<LoginPage />)
 
-    const emailInput = screen.getByRole("textbox", { name: /email/i })
-    const passwordInput = screen.getByLabelText(/password/i)
-    const submitButton = getSubmitBtn()
-
-    expect(emailInput).toBeInTheDocument()
-    expect(passwordInput).toBeInTheDocument()
-    expect(submitButton).toBeInTheDocument()
+    expect(getEmailInput()).toBeInTheDocument()
+    expect(getPasswordInput()).toBeInTheDocument()
+    expect(getSubmitBtn()).toBeInTheDocument()
   })
   it("should validate: inputs (email/password) are required", async () => {
+    const user = userEvent.setup()
     render(<LoginPage />)
 
-    const submitButton = getSubmitBtn()
-    userEvent.click(submitButton)
+    await act(async () => {
+      await user.click(getSubmitBtn())
+    })
 
     const emailRequired = await screen.findByText(/email is required/i)
     const passwordRequired = await screen.findByText(/password is required/i)
 
     expect(emailRequired).toBeInTheDocument()
     expect(passwordRequired).toBeInTheDocument()
+  })
+  it("email should have propper format", async () => {
+    const user = userEvent.setup()
+    render(<LoginPage />)
+
+    await act(async () => {
+      await user.type(getEmailInput(), "invalidEmail.com")
+      await user.click(getSubmitBtn())
+    })
+
+    const emailInvalidFormat = await screen.findByText(/must be a valid email/i)
+
+    expect(emailInvalidFormat).toBeInTheDocument()
   })
 })
