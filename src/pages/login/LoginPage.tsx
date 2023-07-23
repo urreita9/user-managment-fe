@@ -39,7 +39,9 @@ export const LoginPage = () => {
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
         />
-        <Button type='submit'>Submit</Button>
+        <Button type='submit' disabled={formik.isSubmitting}>
+          Submit
+        </Button>
       </form>
     </>
   )

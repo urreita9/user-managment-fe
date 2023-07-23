@@ -46,4 +46,16 @@ describe("Login page", () => {
 
     expect(emailInvalidFormat).toBeInTheDocument()
   })
+  it("submit button should be disabled when fetching", async () => {
+    const user = userEvent.setup()
+    render(<LoginPage />)
+
+    await act(async () => {
+      await user.type(getEmailInput(), "email@email.com")
+      await user.type(getPasswordInput(), "123456")
+      await user.click(getSubmitBtn())
+    })
+
+    expect(getSubmitBtn()).toBeDisabled()
+  })
 })
