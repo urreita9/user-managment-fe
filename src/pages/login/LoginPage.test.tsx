@@ -2,6 +2,8 @@ import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { LoginPage } from "./LoginPage"
 
+const getSubmitBtn = () => screen.getByRole("button", { name: /submit/i })
+
 describe("Login page", () => {
   it("should render login title", () => {
     render(<LoginPage />)
@@ -13,7 +15,7 @@ describe("Login page", () => {
 
     const emailInput = screen.getByRole("textbox", { name: /email/i })
     const passwordInput = screen.getByLabelText(/password/i)
-    const submitButton = screen.getByRole("button", { name: /submit/i })
+    const submitButton = getSubmitBtn()
 
     expect(emailInput).toBeInTheDocument()
     expect(passwordInput).toBeInTheDocument()
@@ -22,7 +24,7 @@ describe("Login page", () => {
   it("should validate: inputs (email/password) are required", async () => {
     render(<LoginPage />)
 
-    const submitButton = screen.getByRole("button", { name: /submit/i })
+    const submitButton = getSubmitBtn()
     userEvent.click(submitButton)
 
     const emailRequired = await screen.findByText(/email is required/i)

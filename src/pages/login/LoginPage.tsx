@@ -1,11 +1,6 @@
 import { Typography, TextField, Button } from "@mui/material"
 import { useFormik } from "formik"
-import * as Yup from "yup"
-
-const loginSchema = Yup.object({
-  email: Yup.string().email().required("Email is required"),
-  password: Yup.string().required("Password is required"),
-})
+import { loginSchema } from "./loginSchema"
 
 const initialValues = {
   email: "",
