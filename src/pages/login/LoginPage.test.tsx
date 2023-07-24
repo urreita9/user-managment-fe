@@ -1,4 +1,4 @@
-import { act, render, screen } from "@testing-library/react"
+import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { LoginPage } from "./LoginPage"
 
@@ -23,9 +23,7 @@ describe("Login page", () => {
     const user = userEvent.setup()
     render(<LoginPage />)
 
-    await act(async () => {
-      await user.click(getSubmitBtn())
-    })
+    await user.click(getSubmitBtn())
 
     const emailRequired = await screen.findByText(/email is required/i)
     const passwordRequired = await screen.findByText(/password is required/i)
@@ -37,25 +35,23 @@ describe("Login page", () => {
     const user = userEvent.setup()
     render(<LoginPage />)
 
-    await act(async () => {
-      await user.type(getEmailInput(), "invalidEmail.com")
-      await user.click(getSubmitBtn())
-    })
+    await user.type(getEmailInput(), "invalidEmail.com")
+    await user.click(getSubmitBtn())
 
     const emailInvalidFormat = await screen.findByText(/must be a valid email/i)
 
     expect(emailInvalidFormat).toBeInTheDocument()
   })
-  it("submit button should be disabled when fetching", async () => {
+  it("should disable submit button when fetching", async () => {
     const user = userEvent.setup()
     render(<LoginPage />)
 
-    await act(async () => {
-      await user.type(getEmailInput(), "email@email.com")
-      await user.type(getPasswordInput(), "123456")
-      await user.click(getSubmitBtn())
-    })
+    expect(getSubmitBtn()).not.toBeDisabled()
 
-    expect(getSubmitBtn()).toBeDisabled()
+    await user.type(getEmailInput(), "email@mail.com")
+    await user.type(getPasswordInput(), "123456")
+    await user.click(getSubmitBtn())
+
+    await waitFor(() => expect(getSubmitBtn()).toBeDisabled())
   })
 })
