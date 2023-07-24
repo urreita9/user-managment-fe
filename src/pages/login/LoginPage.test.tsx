@@ -51,7 +51,6 @@ describe("Login page", () => {
     await user.type(getEmailInput(), "email@mail.com")
     await user.type(getPasswordInput(), "123456")
     await user.click(getSubmitBtn())
-
     await waitFor(() => expect(getSubmitBtn()).toBeDisabled())
   })
 })
