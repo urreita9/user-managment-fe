@@ -1,32 +1,15 @@
-import { useState } from "react"
 import { Typography, TextField, Button } from "@mui/material"
 import { Formik, Form } from "formik"
 import { loginSchema } from "./loginSchema"
-import axios from "axios"
-import { useMutation } from "react-query"
-
-interface Inputs {
-  email: string
-  password: string
-}
+import { useLoginMutation } from "./useLoginMutation"
 
 const initialValues: Inputs = {
   email: "",
   password: "",
 }
 
-const login = async (body: Inputs) => {
-  try {
-    await axios.post("/login", body)
-  } catch (error) {
-    console.log(error)
-  }
-}
-
 export const LoginPage = () => {
-  const mutation = useMutation({
-    mutationFn: (values: Inputs) => login(values),
-  })
+  const mutation = useLoginMutation()
   return (
     <>
       <Typography component={"h1"}>Login</Typography>
