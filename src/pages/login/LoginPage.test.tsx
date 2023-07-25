@@ -55,4 +55,20 @@ describe("Login page", () => {
 
     expect(getSubmitBtn()).toBeDisabled()
   })
+  it("should show loading indicator when fetching", async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<LoginPage />)
+
+    expect(
+      screen.queryByRole("progressbar", { name: /loading/i })
+    ).not.toBeInTheDocument()
+
+    await user.type(getEmailInput(), "email@mail.com")
+    await user.type(getPasswordInput(), "123456")
+    await user.click(getSubmitBtn())
+
+    expect(
+      await screen.findByRole("progressbar", { name: /loading/i })
+    ).toBeInTheDocument()
+  })
 })

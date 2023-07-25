@@ -1,4 +1,4 @@
-import { Typography, TextField, Button } from "@mui/material"
+import { Typography, TextField, Button, CircularProgress } from "@mui/material"
 import { Formik, Form } from "formik"
 import { loginSchema } from "./loginSchema"
 import { useLoginMutation } from "./useLoginMutation"
@@ -14,6 +14,14 @@ export const LoginPage = () => {
   return (
     <>
       <Typography component={"h1"}>Login</Typography>
+
+      {mutation.isLoading && (
+        <CircularProgress
+          color='primary'
+          role='progressbar'
+          aria-label='loading'
+        />
+      )}
 
       <Formik
         initialValues={initialValues}
