@@ -2,6 +2,7 @@ import { Typography, TextField, Button } from "@mui/material"
 import { Formik, Form } from "formik"
 import { loginSchema } from "./loginSchema"
 import { useLoginMutation } from "./useLoginMutation"
+import { Inputs } from "./loginPage.interfaces"
 
 const initialValues: Inputs = {
   email: "",
