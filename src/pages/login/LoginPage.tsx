@@ -3,6 +3,7 @@ import { Typography, TextField, Button } from "@mui/material"
 import { Formik, Form } from "formik"
 import { loginSchema } from "./loginSchema"
 import axios from "axios"
+import { useMutation } from "react-query"
 
 interface Inputs {
   email: string
@@ -14,16 +15,18 @@ const initialValues: Inputs = {
   password: "",
 }
 
-export const LoginPage = () => {
-  const [isLoading, setIsLoading] = useState(false)
-  const login = async (body: Inputs) => {
-    try {
-      await axios.post("/login", body)
-    } catch (error) {
-      console.log(error)
-    }
+const login = async (body: Inputs) => {
+  try {
+    await axios.post("/login", body)
+  } catch (error) {
+    console.log(error)
   }
+}
 
+export const LoginPage = () => {
+  const mutation = useMutation({
+    mutationFn: (values: Inputs) => login(values),
+  })
   return (
     <>
       <Typography component={"h1"}>Login</Typography>
@@ -32,8 +35,7 @@ export const LoginPage = () => {
         initialValues={initialValues}
         validationSchema={loginSchema}
         onSubmit={async (values) => {
-          setIsLoading(true)
-          await login(values)
+          mutation.mutate(values)
         }}
       >
         {(formik) => (
@@ -57,7 +59,7 @@ export const LoginPage = () => {
               error={formik.touched.password && Boolean(formik.errors.password)}
               helperText={formik.touched.password && formik.errors.password}
             />
-            <Button type='submit' disabled={isLoading}>
+            <Button type='submit' disabled={mutation.isLoading}>
               Submit
             </Button>
           </Form>

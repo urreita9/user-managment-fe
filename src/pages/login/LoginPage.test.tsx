@@ -1,6 +1,7 @@
-import { render, screen, waitFor } from "@testing-library/react"
+import { screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { LoginPage } from "./LoginPage"
+import { renderWithProviders } from "../../mocks/renderWithProviders"
 
 const getSubmitBtn = () => screen.getByRole("button", { name: /submit/i })
 const getEmailInput = () => screen.getByRole("textbox", { name: /email/i })
@@ -8,12 +9,12 @@ const getPasswordInput = () => screen.getByLabelText(/password/i)
 
 describe("Login page", () => {
   it("should render login title", () => {
-    render(<LoginPage />)
+    renderWithProviders(<LoginPage />)
 
     expect(screen.getByRole("heading", { name: /login/i })).toBeInTheDocument()
   })
   it("should render form inputs email/password and submit button", () => {
-    render(<LoginPage />)
+    renderWithProviders(<LoginPage />)
 
     expect(getEmailInput()).toBeInTheDocument()
     expect(getPasswordInput()).toBeInTheDocument()
@@ -21,7 +22,7 @@ describe("Login page", () => {
   })
   it("should validate: inputs (email/password) are required", async () => {
     const user = userEvent.setup()
-    render(<LoginPage />)
+    renderWithProviders(<LoginPage />)
 
     await user.click(getSubmitBtn())
 
@@ -33,7 +34,7 @@ describe("Login page", () => {
   })
   it("email should have propper format", async () => {
     const user = userEvent.setup()
-    render(<LoginPage />)
+    renderWithProviders(<LoginPage />)
 
     await user.type(getEmailInput(), "invalidEmail.com")
     await user.click(getSubmitBtn())
@@ -44,13 +45,14 @@ describe("Login page", () => {
   })
   it("should disable submit button when fetching", async () => {
     const user = userEvent.setup()
-    render(<LoginPage />)
+    renderWithProviders(<LoginPage />)
 
     expect(getSubmitBtn()).not.toBeDisabled()
 
     await user.type(getEmailInput(), "email@mail.com")
     await user.type(getPasswordInput(), "123456")
     await user.click(getSubmitBtn())
-    await waitFor(() => expect(getSubmitBtn()).toBeDisabled())
+
+    expect(getSubmitBtn()).toBeDisabled()
   })
 })
