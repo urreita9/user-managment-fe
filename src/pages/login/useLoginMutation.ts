@@ -1,9 +1,10 @@
 import { useMutation } from "react-query"
 import axios from "axios"
 import { Inputs } from "./loginPage.interfaces"
+import { baseUrl } from "../../config"
 
 const login = async (body: Inputs): Promise<void> =>
-  await axios.post("/login", body)
+  await axios.post(`${baseUrl}/login`, body)
 
 export const useLoginMutation = () =>
   useMutation({

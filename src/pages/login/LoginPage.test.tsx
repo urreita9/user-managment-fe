@@ -6,6 +6,7 @@ import { server } from "../../mocks/server"
 import { rest } from "msw"
 import { UserEvent } from "@testing-library/user-event/dist/types/setup/setup"
 import { statusErrorMessages } from "./useLoginMutation"
+import { baseUrl } from "../../config"
 
 const getSubmitBtn = () => screen.getByRole("button", { name: /submit/i })
 const getEmailInput = () => screen.getByRole("textbox", { name: /email/i })
@@ -13,7 +14,7 @@ const getPasswordInput = () => screen.getByLabelText(/password/i)
 
 const mockServerWithError = (statusCode: number) => {
   server.use(
-    rest.post("/login", (req, res, ctx) =>
+    rest.post(`${baseUrl}/login`, (req, res, ctx) =>
       res(ctx.delay(1), ctx.status(statusCode))
     )
   )
