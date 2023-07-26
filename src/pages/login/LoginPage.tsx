@@ -8,7 +8,6 @@ import {
   Container,
   CssBaseline,
   Box,
-  Avatar,
 } from "@mui/material"
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 import { Formik, Form } from "formik"
@@ -59,14 +58,12 @@ export const LoginPage = () => {
           flexDirection: "column",
         }}
       >
-        {/* <Avatar sx={{ m: 1, bgcolor: "#fafafa" }}> */}
         <LockOutlinedIcon
           sx={{
             fontSize: 40,
             color: "primary.main",
           }}
         />
-        {/* </Avatar> */}
 
         <Typography component={"h1"} sx={{ color: "primary.main" }}>
           Login
