@@ -1,18 +1,21 @@
-import { screen, waitFor } from "@testing-library/react"
+import { screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { LoginPage } from "./LoginPage"
 import { renderWithProviders } from "../../mocks/renderWithProviders"
 import { server } from "../../mocks/server"
 import { rest } from "msw"
 import { UserEvent } from "@testing-library/user-event/dist/types/setup/setup"
+import { statusErrorMessages } from "./useLoginMutation"
 
 const getSubmitBtn = () => screen.getByRole("button", { name: /submit/i })
 const getEmailInput = () => screen.getByRole("textbox", { name: /email/i })
 const getPasswordInput = () => screen.getByLabelText(/password/i)
 
-const mockServerWithError = () => {
+const mockServerWithError = (statusCode: number) => {
   server.use(
-    rest.post("/login", (req, res, ctx) => res(ctx.delay(1), ctx.status(500)))
+    rest.post("/login", (req, res, ctx) =>
+      res(ctx.delay(1), ctx.status(statusCode))
+    )
   )
 }
 
@@ -83,7 +86,7 @@ describe("Login page", () => {
     ).toBeInTheDocument()
   })
   it("should display 'Unexpected error, please try again' when there is an error from the api login", async () => {
-    mockServerWithError()
+    mockServerWithError(500)
 
     const user = userEvent.setup()
     renderWithProviders(<LoginPage />)
@@ -91,7 +94,19 @@ describe("Login page", () => {
     await fillAndSendLoginForm(user)
 
     expect(
-      await screen.findByText(/unexpected error, please try again/i)
+      await screen.findByText(statusErrorMessages[500])
+    ).toBeInTheDocument()
+  })
+  it.only("should display 'Email or password incorrect' when credentials are invalid", async () => {
+    mockServerWithError(401)
+
+    const user = userEvent.setup()
+    renderWithProviders(<LoginPage />)
+
+    await fillAndSendLoginForm(user)
+
+    expect(
+      await screen.findByText(statusErrorMessages[401])
     ).toBeInTheDocument()
   })
 })

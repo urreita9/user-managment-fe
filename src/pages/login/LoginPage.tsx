@@ -1,3 +1,4 @@
+import { useState } from "react"
 import {
   Typography,
   TextField,
@@ -7,8 +8,14 @@ import {
 } from "@mui/material"
 import { Formik, Form } from "formik"
 import { loginSchema } from "./loginSchema"
-import { useLoginMutation } from "./useLoginMutation"
+import {
+  FALLBACK_ERROR_MESSAGE,
+  statusErrorMessages,
+  statusErrorMsg,
+  useLoginMutation,
+} from "./useLoginMutation"
 import { Inputs } from "./loginPage.interfaces"
+import axios from "axios"
 
 const initialValues: Inputs = {
   email: "",
@@ -16,6 +23,7 @@ const initialValues: Inputs = {
 }
 
 export const LoginPage = () => {
+  const [errorMessage, setErrorMessage] = useState<string>("")
   const mutation = useLoginMutation()
   return (
     <>
@@ -29,15 +37,23 @@ export const LoginPage = () => {
         />
       )}
 
-      {mutation.isError && (
-        <Alert severity='error'>Unexpected error, please try again</Alert>
-      )}
+      {mutation.isError && <Alert severity='error'>{errorMessage}</Alert>}
 
       <Formik
         initialValues={initialValues}
         validationSchema={loginSchema}
         onSubmit={async (values) => {
-          mutation.mutate(values)
+          mutation.mutate(values, {
+            onError: (error) => {
+              if (axios.isAxiosError(error)) {
+                setErrorMessage(
+                  statusErrorMessages[
+                    error?.response?.status as statusErrorMsg
+                  ] || FALLBACK_ERROR_MESSAGE
+                )
+              }
+            },
+          })
         }}
       >
         {(formik) => (
