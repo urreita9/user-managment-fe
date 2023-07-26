@@ -1,11 +1,26 @@
-import { screen } from "@testing-library/react"
+import { screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { LoginPage } from "./LoginPage"
 import { renderWithProviders } from "../../mocks/renderWithProviders"
+import { server } from "../../mocks/server"
+import { rest } from "msw"
+import { UserEvent } from "@testing-library/user-event/dist/types/setup/setup"
 
 const getSubmitBtn = () => screen.getByRole("button", { name: /submit/i })
 const getEmailInput = () => screen.getByRole("textbox", { name: /email/i })
 const getPasswordInput = () => screen.getByLabelText(/password/i)
+
+const mockServerWithError = () => {
+  server.use(
+    rest.post("/login", (req, res, ctx) => res(ctx.delay(1), ctx.status(500)))
+  )
+}
+
+const fillAndSendLoginForm = async (user: UserEvent) => {
+  await user.type(getEmailInput(), "email@mail.com")
+  await user.type(getPasswordInput(), "123456")
+  await user.click(getSubmitBtn())
+}
 
 describe("Login page", () => {
   it("should render login title", () => {
@@ -49,9 +64,7 @@ describe("Login page", () => {
 
     expect(getSubmitBtn()).not.toBeDisabled()
 
-    await user.type(getEmailInput(), "email@mail.com")
-    await user.type(getPasswordInput(), "123456")
-    await user.click(getSubmitBtn())
+    await fillAndSendLoginForm(user)
 
     expect(getSubmitBtn()).toBeDisabled()
   })
@@ -63,12 +76,22 @@ describe("Login page", () => {
       screen.queryByRole("progressbar", { name: /loading/i })
     ).not.toBeInTheDocument()
 
-    await user.type(getEmailInput(), "email@mail.com")
-    await user.type(getPasswordInput(), "123456")
-    await user.click(getSubmitBtn())
+    await fillAndSendLoginForm(user)
 
     expect(
       await screen.findByRole("progressbar", { name: /loading/i })
+    ).toBeInTheDocument()
+  })
+  it("should display 'Unexpected error, please try again' when there is an error from the api login", async () => {
+    mockServerWithError()
+
+    const user = userEvent.setup()
+    renderWithProviders(<LoginPage />)
+
+    await fillAndSendLoginForm(user)
+
+    expect(
+      await screen.findByText(/unexpected error, please try again/i)
     ).toBeInTheDocument()
   })
 })

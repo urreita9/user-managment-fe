@@ -1,4 +1,10 @@
-import { Typography, TextField, Button, CircularProgress } from "@mui/material"
+import {
+  Typography,
+  TextField,
+  Button,
+  CircularProgress,
+  Alert,
+} from "@mui/material"
 import { Formik, Form } from "formik"
 import { loginSchema } from "./loginSchema"
 import { useLoginMutation } from "./useLoginMutation"
@@ -21,6 +27,10 @@ export const LoginPage = () => {
           role='progressbar'
           aria-label='loading'
         />
+      )}
+
+      {mutation.isError && (
+        <Alert severity='error'>Unexpected error, please try again</Alert>
       )}
 
       <Formik

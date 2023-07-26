@@ -2,13 +2,8 @@ import { useMutation } from "react-query"
 import axios from "axios"
 import { Inputs } from "./loginPage.interfaces"
 
-const login = async (body: Inputs) => {
-  try {
-    await axios.post("/login", body)
-  } catch (error) {
-    console.log(error)
-  }
-}
+const login = async (body: Inputs) => await axios.post("/login", body)
+
 export const useLoginMutation = () =>
   useMutation({
     mutationFn: (values: Inputs) => login(values),
