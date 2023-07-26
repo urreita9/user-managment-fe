@@ -31,16 +31,27 @@ export const LoginPage = () => {
   const [errorMessage, setErrorMessage] = useState<string>("")
   const mutation = useLoginMutation()
 
+  const btnStyles = {
+    color: "#fafafa",
+    "&:hover": {
+      borderColor: "#146c34",
+    },
+  }
+  const inputStyles = {
+    color: "#fafafa",
+  }
   return (
     <Container
       component='main'
       sx={{
+        background: "linear-gradient(to right bottom, #0ff3fe, #fafafa)",
         minHeight: "100vh",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
       }}
     >
+      <CssBaseline />
       <Box
         sx={{
           display: "flex",
@@ -48,11 +59,18 @@ export const LoginPage = () => {
           flexDirection: "column",
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-          <LockOutlinedIcon />
-        </Avatar>
+        {/* <Avatar sx={{ m: 1, bgcolor: "#fafafa" }}> */}
+        <LockOutlinedIcon
+          sx={{
+            fontSize: 40,
+            color: "primary.main",
+          }}
+        />
+        {/* </Avatar> */}
 
-        <Typography component={"h1"}>Login</Typography>
+        <Typography component={"h1"} sx={{ color: "primary.main" }}>
+          Login
+        </Typography>
 
         {mutation.isLoading && (
           <CircularProgress
@@ -100,6 +118,7 @@ export const LoginPage = () => {
                   onBlur={formik.handleBlur}
                   error={formik.touched.email && Boolean(formik.errors.email)}
                   helperText={formik.touched.email && formik.errors.email}
+                  sx={inputStyles}
                 />
                 <TextField
                   name='password'
@@ -112,11 +131,13 @@ export const LoginPage = () => {
                     formik.touched.password && Boolean(formik.errors.password)
                   }
                   helperText={formik.touched.password && formik.errors.password}
+                  sx={inputStyles}
                 />
                 <Button
                   type='submit'
                   disabled={mutation.isLoading}
                   variant='contained'
+                  sx={btnStyles}
                 >
                   Submit
                 </Button>

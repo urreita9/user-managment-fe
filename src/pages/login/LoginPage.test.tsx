@@ -97,7 +97,7 @@ describe("Login page", () => {
       await screen.findByText(statusErrorMessages[500])
     ).toBeInTheDocument()
   })
-  it.only("should display 'Email or password incorrect' when credentials are invalid", async () => {
+  it("should display 'Email or password incorrect' when credentials are invalid", async () => {
     mockServerWithError(401)
 
     const user = userEvent.setup()
