@@ -1,8 +1,8 @@
-import React from "react"
+import { LoginPage } from "./pages/login/LoginPage"
 import "./App.css"
 
-function App() {
-  return <div>user management frontend</div>
+const App = () => {
+  return <LoginPage />
 }
 
 export default App
