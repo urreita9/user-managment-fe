@@ -41,7 +41,6 @@ export const LoginPage = () => {
         justifyContent: "center",
       }}
     >
-      <CssBaseline />
       <Box
         sx={{
           display: "flex",
